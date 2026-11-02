@@ -1,0 +1,35 @@
+
+name: Lean 4 Proof Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify Planetary Dispersion Mathematics
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Lean 4 and Mathlib
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          use-mathlib-cache: true
+
+      - name: Verify all four Lean proof files
+        run: |
+          set -e
+          lake env lean GasNormalisation.lean
+          lake env lean PlanetaryDispersionThermodynamics.lean
+          lake env lean PlanetaryDispersionAudioMappings.lean
+          lake env lean PlanetaryDispersionPowerLawChecks.lean
